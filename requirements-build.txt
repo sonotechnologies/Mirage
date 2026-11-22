@@ -1,0 +1,4 @@
+# Build/test-only dependencies.
+pyinstaller>=6.6
+onnx>=1.16          # extracts inswapper's embedding matrix in build/fetch_models.py
+pytest>=8

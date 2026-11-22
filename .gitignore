@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+models/*.onnx
+models/*.npy
+models/*.zip
+dist/
+build/out/
+build/downloads/
+*.log
+.pytest_cache/
+drivers/*.dll

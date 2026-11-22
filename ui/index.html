@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mirage</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ===================================================== top bar (48px) -->
+  <header class="topbar">
+    <div class="brand pywebview-drag-region">
+      <div class="brand-icon pywebview-drag-region" aria-hidden="true"><span></span></div>
+      <div class="wordmark pywebview-drag-region" id="wordmark" aria-label="MIRAGE"></div>
+    </div>
+    <div class="pill pill--offline pywebview-drag-region" id="status" data-param="status" role="status" aria-live="polite"><span class="dot"></span><span id="status-text">Offline</span></div>
+    <div class="spacer pywebview-drag-region"></div>
+    <div class="chip pywebview-drag-region" id="hw" title="">
+      <span class="k" id="hw-k">GPU</span><span class="v" id="hw-v">…</span>
+    </div>
+    <div class="winctl">
+      <button class="winbtn winbtn--settings" data-action="open_settings" aria-label="Settings" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      </button>
+      <button class="winbtn" data-action="minimize" aria-label="Minimize"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor"><path d="M0 5h10"/></svg></button>
+      <button class="winbtn" data-action="maximize" aria-label="Maximize"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9"/></svg></button>
+      <button class="winbtn winbtn--close" data-action="close" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor"><path d="M0 0l10 10M10 0L0 10"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- =================================================== preview stage -->
+    <main class="stage">
+      <div class="banner" id="banner" role="alert" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>
+        <div class="msg"><b id="banner-title"></b> <span id="banner-body"></span></div>
+        <button class="btn-outline-danger" id="banner-fix" data-action="fix_error">Fix</button>
+        <button class="dismiss" id="banner-dismiss" data-action="dismiss_error" aria-label="Dismiss">✕</button>
+      </div>
+      <div class="letterbox">
+        <div class="preview" id="preview-box">
+          <img id="preview" class="frame" alt="Live preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          <div class="placeholder" id="preview-placeholder">STARTING CAMERA…</div>
+          <div class="split" id="split" hidden>
+            <img id="preview-orig" class="frame" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+            <div class="divider" id="split-divider"></div>
+            <span class="tag" style="left:12px">ORIGINAL</span><span class="tag" style="right:12px">MIRAGE</span>
+          </div>
+          <input type="range" class="split-range" id="split-range" min="5" max="95" value="50" aria-label="Split position" data-param="split" hidden>
+          <div class="shimmer" id="shimmer" aria-hidden="true"></div>
+          <div class="viewtabs" role="tablist" aria-label="Preview view" id="viewtabs">
+            <button role="tab" data-param="view" data-value="Original" aria-selected="false">Original</button>
+            <button role="tab" data-param="view" data-value="Mirage" aria-selected="true">Mirage</button>
+            <button role="tab" data-param="view" data-value="Split" aria-selected="false">Split</button>
+          </div>
+          <div class="fps" id="fps" title=""><span id="fps-v">FPS —</span><span class="sep">·</span><span id="ms-v">—ms</span></div>
+          <div class="caption" id="noface" hidden>No face in view — showing your real camera</div>
+          <div id="toast-host"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- =================================================== right panel (300px) -->
+    <aside class="panel" id="panel" aria-label="Controls">
+      <div class="panel-head">
+        <button class="iconbtn" data-action="collapse_panel" aria-label="Collapse controls" title="Collapse">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="panel-scroll" id="controls"></div>
+      <div class="panel-foot">
+        <button class="btn-live" id="live-btn" data-action="start"></button>
+      </div>
+    </aside>
+
+    <!-- collapsed icon rail (64px) -->
+    <aside class="rail" id="rail" aria-label="Controls (collapsed)">
+      <button class="railbtn" data-action="expand_panel" aria-label="Expand controls" title="Expand">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="railbtn" data-action="expand_panel" data-group="swap" aria-label="Swap" title="Swap">SW</button>
+      <button class="railbtn" data-action="expand_panel" data-group="look" aria-label="Look" title="Look">LK</button>
+      <button class="railbtn" data-action="expand_panel" data-group="input" aria-label="Input" title="Input">IN</button>
+      <button class="railbtn" data-action="expand_panel" data-group="performance" aria-label="Performance" title="Performance" id="rail-perf">PF</button>
+      <div class="spacer"></div>
+      <button class="rail-live" id="rail-live" data-action="start" aria-label="Start"></button>
+    </aside>
+  </div>
+
+  <!-- ===================================================== face strip (132px) -->
+  <footer class="strip" id="strip">
+    <button class="dropzone" id="dropzone" data-action="import_face" hidden>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+      Drop a face photo to start
+    </button>
+    <div class="faces" id="faces" role="listbox" aria-label="Face library" aria-orientation="horizontal"></div>
+    <div class="kbdhint"><kbd id="bypass-key">Ctrl+Alt+0</kbd>real camera</div>
+  </footer>
+</div>
+
+<input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+<div id="overlay-host"></div>
+
+<script src="mock.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
