@@ -10,3 +10,4 @@ build/out/
 build/downloads/
 *.log
 .pytest_cache/
+drivers/*.dll

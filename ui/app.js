@@ -802,7 +802,7 @@
   }
 
   async function connect() {
-    if (window.pywebview && window.pywebview.api) { S.api = window.pywebview.api; S.mock = false; }
+    if (window.pywebview && window.pywebview.api && window.pywebview.api.get_state) { S.api = window.pywebview.api; S.mock = false; }
     else { S.api = window.MirageMock.api; S.mock = true; }
     const st = await call("get_state");
     if (st.ok !== false) applyState(st);
@@ -821,7 +821,7 @@
   let connected = false;
   const go = () => { if (!connected) { connected = true; connect(); } };
   window.addEventListener("pywebviewready", go);
-  if (window.pywebview && window.pywebview.api) go();
+  if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_state === "function") go();
   // Opened as a file (browser review) -> mock quickly; served over http (pywebview's local
   // server) -> wait for the real bridge, and only fall back to mock if it never arrives.
   else setTimeout(go, location.protocol === "file:" ? 300 : 4000);

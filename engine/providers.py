@@ -132,7 +132,9 @@ def pick_tier(ms_per_stage: dict, gpu: bool) -> str:
         per_frame += ms_per_stage["occlude"] / t.occlusion_every * (0.5 if t.occlusion_lowres else 1)
         if t.enhancer_default:
             per_frame += ms_per_stage["enhance"]
-        per_frame += 4 + (t.width * t.height) / (1280 * 720) * 3  # capture/paste/encode overhead
+        # In-thread overhead (align, colour, paste) grows with resolution; capture and
+        # JPEG encode run on other threads so they are not counted here.
+        per_frame += 2 + (t.width * t.height) / (1280 * 720) * 1.5
         fps = 1000.0 / per_frame
         floor = {"Ultra": 30, "Balanced": 25, "Performance": 0}[name]
         if fps >= floor:

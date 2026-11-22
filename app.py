@@ -193,7 +193,9 @@ def run_window(args) -> int:
     window.events.loaded += on_loaded
     window.events.closed += lambda: core.shutdown()
     core.boot_async()   # load models while the window paints
-    webview.start(gui="edgechromium" if os.name == "nt" else None, debug=args.debug)
+    # http_server=True serves ui/ from 127.0.0.1 (fonts and fetches behave like a normal page).
+    webview.start(gui="edgechromium" if os.name == "nt" else None, debug=args.debug, http_server=True,
+                  private_mode=False, storage_path=str(paths.user_dir() / "webview"))
     return 0
 
 
